@@ -11,13 +11,14 @@ class TwoWayMapping(object):
         self.invert._reverse = self._direct
 
     def clear(self):
-        self._direct = defaultdict(set)
-        self._reverse = defaultdict(set)
+        self._direct.clear()
+        self._reverse.clear()
 
     def copy(self):
         new_mapping = TwoWayMapping()
         new_mapping._direct = self._direct.copy()
         new_mapping._reverse = self._reverse.copy()
+        return new_mapping
 
     def get(self, key, default=None):
         return self._direct.get(key, default)
@@ -33,10 +34,7 @@ class TwoWayMapping(object):
         return return_values
 
     def __getitem__(self, item):
-        if item in self._direct:
-            return self._direct[item]
-        else:
-            return None
+        return self._direct[item]
 
     def __setitem__(self, key, value):
         self._direct[key].add(value)
@@ -49,3 +47,8 @@ class TwoWayMapping(object):
             self._reverse[value].discard(key)
             if not self._reverse[value]:
                 del self._reverse[value]
+
+    def __contains__(self, item):
+        if item in self._direct:
+            return True
+        return False
